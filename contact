@@ -1,0 +1,90 @@
+import csv
+
+def add_contact(name, email, phone):
+    with open('contacts.csv', 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([name, email, phone])
+    print(f"Added contact {name} ({email}, {phone})")
+
+def list_contacts():
+    with open('contacts.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            print(f"{row[0]} ({row[1]}, {row[2]})")
+
+def find_contact(name):
+    with open('contacts.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            if row[0] == name:
+                print(f"{row[0]} ({row[1]}, {row[2]})")
+                return
+    print(f"Contact {name} not found")
+
+def delete_contact(name):
+    with open('contacts.csv', 'r', newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        contacts = []
+        for row in reader:
+            if row[0] != name:
+                contacts.append(row)
+    with open('contacts.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(contacts)
+    print(f"Deleted contact {name}")
+
+def edit_contact(name, email=None, phone=None):
+    with open('contacts.csv', 'r', newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        contacts = []
+        for row in reader:
+            if row[0] == name:
+                if email is None:
+                    email = row[1]
+                if phone is None:
+                    phone = row[2]
+                contacts.append([name, email, phone])
+            else:
+                contacts.append(row)
+    with open('contacts.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(contacts)
+    print(f"Edited contact {name} ({email}, {phone})")
+
+def main():
+    print("Welcome to the contact manager!")
+    while True:
+        print("\nPlease select an action:")
+        print("1. Add a contact")
+        print("2. List contacts")
+        print("3. Find a contact")
+        print("4. Delete a contact")
+        print("5. Edit a contact")
+        print("6. Quit")
+        choice = input("> ")
+        if choice == '1':
+            name = input("Enter the name: ")
+            email = input("Enter the email: ")
+            phone = input("Enter the phone number: ")
+            add_contact(name, email, phone)
+        elif choice == '2':
+            list_contacts()
+        elif choice == '3':
+            name = input("Enter the name: ")
+            find_contact(name)
+        elif choice == '4':
+            name = input("Enter the name: ")
+            delete_contact(name)
+        elif choice == '5':
+            name = input("Enter the name: ")
+            email = input("Enter the new email (leave blank to keep current value): ")
+            phone = input("Enter the new phone number (leave blank to keep current value): ")
+            edit_contact(name, email, phone)
+        elif choice == '6':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == '__main__':
+    main()
